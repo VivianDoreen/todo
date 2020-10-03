@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^7.1.2",
     "browserslist": "^4.14.5",
     "caniuse-lite": "^1.0.30001142",
+    "express": "^4.17.1",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -23,6 +24,9 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "engines": {
+    "node": "14"
   },
   "browserslist": {
     "production": [
