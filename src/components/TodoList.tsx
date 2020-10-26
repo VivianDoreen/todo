@@ -9,7 +9,15 @@ const styles = makeStyles((theme) => ({
 	}
 }));
 
-const TodoList = ({ dispatch, handleChange, id, name, completed }) => {
+interface Props{
+	dispatch:any, 
+	handleChange:((event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void), 
+	id:any,
+	name:string, 
+	completed:boolean 
+}
+
+const TodoList:React.FC<Props> = ({ dispatch, handleChange, id, name, completed }) => {
 	console.log(completed, 'completed');
 	const classes = styles();
 	return (

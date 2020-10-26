@@ -3,7 +3,7 @@ import React, { useState, useReducer } from 'react';
 import { Box, Card, CardContent, Button, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import TodoList from '../components/TodoList.js';
+import TodoList from '../components/TodoList';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -31,12 +31,23 @@ export const ACTIONS = {
 	DELETE_TODO: 'delete todo'
 };
 
-const reducer = (todos, action) => {
-	switch (action.type) {
-		case ACTIONS.ADD_TODO:
-			return [ ...todos, addTodo(action.payload.name, action.payload.checked) ];
+interface Todo{
+	id: Date,
+	name:string,
+	completed: boolean
+}
 
-		case ACTIONS.COMPLETE_TODO:
+type State=Todo[]
+
+type Action = |{type:'add todo', payload:{name:string, completed:boolean}}
+|{type:'complete todo', payload:{id:Date}}|{type:'delete todo', payload:{id:Date}}
+
+const reducer = (todos:State, action:Action) => {
+	switch (action.type) {
+		case 'add todo':
+			return [ ...todos, addTodo(action.payload.name, action.payload.completed) ];
+
+		case 'complete todo':
 			return todos.map((todo) => {
 				console.log(todo.completed, 'todo.completed');
 				if (todo.id === action.payload.id) {
@@ -45,7 +56,7 @@ const reducer = (todos, action) => {
 				return todo;
 			});
 
-		case ACTIONS.DELETE_TODO:
+		case 'delete todo':
 			return todos.filter((todo) => todo.id !== action.payload.id);
 
 		default:
@@ -53,7 +64,7 @@ const reducer = (todos, action) => {
 	}
 };
 
-const addTodo = (name, checked) => {
+const addTodo = (name:string, checked:boolean) => {
 	return {
 		id: new Date(),
 		name,
@@ -68,18 +79,16 @@ const Todo = () => {
 	const classes = useStyles();
 	const height = 34;
 
-	const handleChange = (e) => {
+	const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
 		const { checked } = e.target;
 		setChecked(checked);
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		dispatch({ type: ACTIONS.ADD_TODO, payload: { name, checked } });
+		dispatch({ type:'add todo', payload: { name, completed:checked } });
 		setName('');
 	};
-
-	console.log(todos, 'todostodostodos');
 
 	return (
 		<Card className={classes.root}>
@@ -127,8 +136,8 @@ const Todo = () => {
 				</Box>
 				<Box>
 					{todos.length !== 0 &&
-						todos.map((todo) => (
-							<TodoList key={todo.id} checked={checked} handleChange={handleChange} {...todo} dispatch={dispatch} />
+						todos.map((todo, index) => (
+							<TodoList key={index} handleChange={handleChange} {...todo} dispatch={dispatch} />
 						))}
 				</Box>
 			</CardContent>
